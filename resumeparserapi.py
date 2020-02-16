@@ -9,7 +9,6 @@ Created on Mon Feb 10 22:24:55 2020
 from flask import Flask, request
 from flasgger import Swagger
 from flask import jsonify
-import constants as cs
 
 app = Flask(__name__)
 swagger = Swagger(app)
