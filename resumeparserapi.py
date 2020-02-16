@@ -16,6 +16,14 @@ swagger = Swagger(app)
 
 @app.route('/predict_file', methods=["POST"])
 def predict_iris_file():
+    """Example file endpoint returning a prediction of iris
+    ---
+    parameters:
+      - name: fieldNameHere
+        in: formData
+        type: file
+        required: true
+    """
     data = (request.files.get("fieldNameHere")).read().decode()
     entity = extract_entity_sections(data)
     return jsonify(entity)
