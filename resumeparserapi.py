@@ -17,6 +17,7 @@ from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords 
 import re
 import pandas as pd
+import en_core_web_sm
 
 app = Flask(__name__)
 swagger = Swagger(app)
