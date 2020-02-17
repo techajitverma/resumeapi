@@ -17,6 +17,7 @@ from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords 
 import re
 import pandas as pd
+import en_core_web_sm
 
 app = Flask(__name__)
 swagger = Swagger(app)
@@ -46,7 +47,8 @@ def get_skills():
         required: true
     """
     data = (request.files.get("fieldNameHere")).read().decode()
-    nlp = spacy.load('en_core_web_sm')
+    #nlp = spacy.load('en_core_web_sm')
+    nlp = en_core_web_sm.load()
     nlpdata=nlp(data)
     noun_chunks = list(nlpdata.noun_chunks)
     test=extract_skills(nlpdata,noun_chunks)
