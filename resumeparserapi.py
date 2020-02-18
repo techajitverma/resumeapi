@@ -12,6 +12,7 @@ import mypackage.constants as cs
 import spacy
 from spacy.matcher import Matcher
 import nltk
+nltk.download('punkt')
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords 
 import re
