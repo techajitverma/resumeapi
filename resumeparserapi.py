@@ -5,7 +5,6 @@ Created on Mon Feb 10 22:24:55 2020
 @author: verma
 """
 
-
 from flask import Flask, request
 from flasgger import Swagger
 from flask import jsonify
@@ -21,6 +20,45 @@ import en_core_web_sm
 
 app = Flask(__name__)
 swagger = Swagger(app)
+
+
+@app.route('/extract_all', methods=["POST"])
+def extract_all_entity():
+    """Example file endpoint returning a prediction of iris
+    ---
+    parameters:
+      - name: fieldNameHere
+        in: formData
+        type: file
+        required: true
+    """
+    data = (request.files.get("fieldNameHere")).read().decode()
+    entity = extract_entity_sections(data)
+    
+    nlp = en_core_web_sm.load()
+    nlpdata=nlp(data)
+    noun_chunks = list(nlpdata.noun_chunks)
+    skills=extract_skills(nlpdata,noun_chunks)
+    
+    matcher = Matcher(nlp.vocab)
+    getName=extract_name(nlpdata,matcher)
+    
+    experience = extract_experience(data)
+    
+    education=extract_education([sent.string.strip() for sent in nlpdata.sents])
+    
+    email = extract_email(data)
+    mobile = extract_mobile_number(data)
+    
+    data = {}
+    data['skills'] = skills
+    data['entity'] = entity
+    data['Name'] = getName
+    data['experience'] = experience
+    data['education'] = education
+    data['email'] = email
+    data['mobile'] = mobile
+    return jsonify(data)
 
 @app.route('/extract_entity', methods=["POST"])
 def extract_entity():
@@ -106,7 +144,6 @@ def extract_entity_sections(text):
 def extract_mobile_number(text):
     '''
     Helper function to extract mobile number from text
-
     :param text: plain text extracted from resume file
     :return: string of extracted mobile numbers
     '''
@@ -121,7 +158,6 @@ def extract_mobile_number(text):
 def extract_email(text):
     '''
     Helper function to extract email id from text
-
     :param text: plain text extracted from resume file
     '''
     email = re.findall("([^@|\s]+@[^@]+\.[^@|\s]+)", text)
@@ -135,7 +171,6 @@ def extract_email(text):
 def extract_skills(nlp_text, noun_chunks):
     '''
     Helper function to extract skills from spacy nlp text
-
     :param nlp_text: object of `spacy.tokens.doc.Doc`
     :param noun_chunks: noun chunks extracted from nlp text
     :return: list of skills extracted
@@ -159,7 +194,6 @@ def extract_skills(nlp_text, noun_chunks):
 def extract_name(nlp_text, matcher):
     '''
     Helper function to extract name from spacy nlp text
-
     :param nlp_text: object of `spacy.tokens.doc.Doc`
     :param matcher: object of `spacy.matcher.Matcher`
     :return: string of full name
@@ -177,7 +211,6 @@ def extract_name(nlp_text, matcher):
 def extract_experience(resume_text):
     '''
     Helper function to extract experience from resume text
-
     :param resume_text: Plain resume text
     :return: list of experience
     '''
@@ -210,7 +243,6 @@ def extract_experience(resume_text):
 def extract_education(nlp_text):
     '''
     Helper function to extract education from spacy nlp text
-
     :param nlp_text: object of `spacy.tokens.doc.Doc`
     :return: tuple of education degree and year if year if found else only returns education degree
     '''
@@ -231,4 +263,3 @@ def extract_education(nlp_text):
         else:
             education.append(key)
     return education
-    
