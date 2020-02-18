@@ -13,6 +13,7 @@ import spacy
 from spacy.matcher import Matcher
 import nltk
 nltk.download('punkt')
+nltk.download('wordnet')
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords 
 import re
