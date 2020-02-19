@@ -35,7 +35,7 @@ def extract_all_entity():
         type: file
         required: true
     """
-    data = (request.files.get("fieldNameHere")).read().decode()
+    data = (request.files.get("fieldNameHere")).read().decode('latin1', 'strict')
     entity = extract_entity_sections(data)
     
     nlp = en_core_web_sm.load()
